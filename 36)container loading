@@ -1,0 +1,51 @@
+#include <stdio.h>
+#define MAX_CONTAINERS 10
+#define MAX_ITEMS 20
+typedef struct {
+    int width;
+    int height;
+} Item;
+typedef struct {
+    int width;
+    int height;
+    int remainingWidth;
+} Container;
+void loadContainers(Item items[], int numItems, int containerWidth) {
+    Container containers[MAX_CONTAINERS];
+    int numContainers = 0;
+    for (int i = 0; i < numItems; i++) {
+        int placed = 0;
+        for (int j = 0; j < numContainers; j++) {
+            if (containers[j].remainingWidth >= items[i].width && containers[j].height >= items[i].height) {
+                containers[j].remainingWidth -= items[i].width;
+                placed = 1;
+                break;
+            }
+        }
+        if (!placed) {
+            if (numContainers >= MAX_CONTAINERS) {
+                printf("Not enough containers for all items.\n");
+                return;
+            }
+            containers[numContainers].width = containerWidth;
+            containers[numContainers].height = containers[numContainers].remainingWidth = items[i].height;
+            containers[numContainers].remainingWidth -= items[i].width;
+            numContainers++;
+        }
+    }
+    printf("Number of containers used: %d\n", numContainers);
+}
+int main() {
+    Item items[MAX_ITEMS];
+    int numItems, containerWidth;
+    printf("Enter the number of items: ");
+    scanf("%d", &numItems);
+    printf("Enter the container width: ");
+    scanf("%d", &containerWidth);
+    printf("Enter the dimensions of each item (width height):\n");
+    for (int i = 0; i < numItems; i++) {
+        scanf("%d %d", &items[i].width, &items[i].height);
+    }
+    loadContainers(items, numItems, containerWidth);
+    return 0;
+}
