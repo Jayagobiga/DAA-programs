@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX_SIZE 10
+int costMatrix[MAX_SIZE][MAX_SIZE];
+int numWorkers, numTasks;
+int assignedTasks[MAX_SIZE];
+bool assigned[MAX_SIZE];
+int minCost = 99999;
+void assignTasks(int worker) {
+    if (worker == numWorkers) {
+        int totalCost = 0;
+        for (int i = 0; i < numWorkers; i++) {
+            totalCost += costMatrix[i][assignedTasks[i]];
+        }
+        if (totalCost < minCost) {
+            minCost = totalCost;
+        }
+        return;
+    }
+    for (int task = 0; task < numTasks; task++) {
+        if (!assigned[task]) {
+            assigned[task] = true;
+            assignedTasks[worker] = task;
+            assignTasks(worker + 1);
+            assigned[task] = false;
+        }
+    }
+}
+int main() {
+    printf("Enter the number of workers: ");
+    scanf("%d", &numWorkers);
+    printf("Enter the number of tasks: ");
+    scanf("%d", &numTasks);
+    printf("Enter the cost matrix:\n");
+    for (int i = 0; i < numWorkers; i++) {
+        for (int j = 0; j < numTasks; j++) {
+            scanf("%d", &costMatrix[i][j]);
+        }
+    }
+    assignTasks(0);
+    printf("Minimum cost: %d\n", minCost);
+    return 0;
+}
